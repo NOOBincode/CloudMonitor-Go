@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package collector.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "collector/api/collector/v1;v1";
+
+// Collector服务定义
+service CollectorService {
+  // 接收指标数据
+  rpc ReceiveMetrics(ReceiveMetricsRequest) returns (ReceiveMetricsResponse) {
+    option (google.api.http) = {
+      post: "/v1/collector/metrics"
+      body: "*"
+    };
+  }
+
+  // 接收日志数据
+  rpc ReceiveLogs(ReceiveLogsRequest) returns (ReceiveLogsResponse) {
+    option (google.api.http) = {
+      post: "/v1/collector/logs"
+      body: "*"
+    };
+  }
+
+  // 接收链路追踪数据
+  rpc ReceiveTraces(ReceiveTracesRequest) returns (ReceiveTracesResponse) {
+    option (google.api.http) = {
+      post: "/v1/collector/traces"
+      body: "*"
+    };
+  }
+}
+
+// 接收指标请求
+message ReceiveMetricsRequest {
+  string source = 1;
+  repeated MetricData metrics = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// 接收指标响应
+message ReceiveMetricsResponse {
+  bool success = 1;
+  string message = 2;
+  int32 count = 3;
+}
+
+// 指标数据
+message MetricData {
+  string name = 1;
+  string value = 2;
+  string unit = 3;
+  map<string, string> labels = 4;
+  google.protobuf.Timestamp timestamp = 5;
+}
+
+// 接收日志请求
+message ReceiveLogsRequest {
+  string source = 1;
+  repeated LogData logs = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// 接收日志响应
+message ReceiveLogsResponse {
+  bool success = 1;
+  string message = 2;
+  int32 count = 3;
+}
+
+// 日志数据
+message LogData {
+  string level = 1;
+  string message = 2;
+  map<string, string> fields = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// 接收链路追踪请求
+message ReceiveTracesRequest {
+  string source = 1;
+  repeated TraceData traces = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// 接收链路追踪响应
+message ReceiveTracesResponse {
+  bool success = 1;
+  string message = 2;
+  int32 count = 3;
+}
+
+// 链路追踪数据
+message TraceData {
+  string trace_id = 1;
+  string span_id = 2;
+  string parent_span_id = 3;
+  string operation_name = 4;
+  map<string, string> tags = 5;
+  google.protobuf.Timestamp start_time = 6;
+  google.protobuf.Timestamp end_time = 7;
+}

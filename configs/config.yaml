@@ -1,0 +1,154 @@
+# CloudMonitor-Go 配置文件
+
+# 全局配置
+global:
+  name: "cloudmonitor-go"
+  version: "1.0.0"
+  environment: "development"
+
+# 服务配置
+services:
+  # Agent服务配置
+  agent:
+    name: "agent"
+    port: 9001
+    http_port: 8001
+    grpc_endpoint: ":9001"
+    http_endpoint: ":8001"
+    
+  # Collector服务配置
+  collector:
+    name: "collector"
+    port: 9002
+    http_port: 8002
+    grpc_endpoint: ":9002"
+    http_endpoint: ":8002"
+    
+  # Processor服务配置
+  processor:
+    name: "processor"
+    port: 9003
+    http_port: 8003
+    grpc_endpoint: ":9003"
+    http_endpoint: ":8003"
+    
+  # Alerting服务配置
+  alerting:
+    name: "alerting"
+    port: 9004
+    http_port: 8004
+    grpc_endpoint: ":9004"
+    http_endpoint: ":8004"
+    
+  # Query服务配置
+  query:
+    name: "query"
+    port: 9005
+    http_port: 8005
+    grpc_endpoint: ":9005"
+    http_endpoint: ":8005"
+    
+  # Web服务配置
+  web:
+    name: "web"
+    port: 9006
+    http_port: 8006
+    grpc_endpoint: ":9006"
+    http_endpoint: ":8006"
+
+# 数据库配置
+database:
+  # MySQL配置
+  mysql:
+    host: "localhost"
+    port: 3306
+    username: "cloudmonitor"
+    password: "password"
+    database: "cloudmonitor"
+    charset: "utf8mb4"
+    parse_time: true
+    loc: "Local"
+    max_open_conns: 100
+    max_idle_conns: 10
+    
+  # Redis配置
+  redis:
+    host: "localhost"
+    port: 6379
+    password: ""
+    database: 0
+    pool_size: 10
+    
+  # InfluxDB配置
+  influxdb:
+    url: "http://localhost:8086"
+    token: "your-token"
+    org: "cloudmonitor"
+    bucket: "metrics"
+
+# 消息队列配置
+message_queue:
+  # Kafka配置
+  kafka:
+    brokers:
+      - "localhost:9092"
+    topic_metrics: "metrics"
+    topic_logs: "logs"
+    topic_traces: "traces"
+    
+  # RabbitMQ配置
+  rabbitmq:
+    url: "amqp://guest:guest@localhost:5672/"
+    exchange: "cloudmonitor"
+    queue_metrics: "metrics"
+    queue_logs: "logs"
+    queue_traces: "traces"
+
+# 日志配置
+log:
+  level: "info"
+  format: "json"
+  output: "stdout"
+  file_path: "logs/cloudmonitor.log"
+
+# 监控配置
+monitoring:
+  # Prometheus配置
+  prometheus:
+    enabled: true
+    port: 9090
+    
+  # Jaeger配置
+  jaeger:
+    enabled: true
+    endpoint: "http://localhost:14268/api/traces"
+    
+  # Grafana配置
+  grafana:
+    enabled: true
+    url: "http://localhost:3000"
+    username: "admin"
+    password: "admin"
+
+# 告警配置
+alerting:
+  # 钉钉配置
+  dingtalk:
+    enabled: false
+    webhook_url: ""
+    secret: ""
+    
+  # 企业微信配置
+  wechat:
+    enabled: false
+    webhook_url: ""
+    
+  # 邮件配置
+  email:
+    enabled: false
+    smtp_host: ""
+    smtp_port: 587
+    username: ""
+    password: ""
+    from: ""
+    to: []

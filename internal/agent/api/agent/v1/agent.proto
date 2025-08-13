@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package agent.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "agent/api/agent/v1;v1";
+
+// Agent服务定义
+service AgentService {
+  // 收集系统指标
+  rpc CollectMetrics(CollectMetricsRequest) returns (CollectMetricsResponse) {
+    option (google.api.http) = {
+      post: "/v1/agent/metrics"
+      body: "*"
+    };
+  }
+
+  // 健康检查
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {
+    option (google.api.http) = {
+      get: "/v1/agent/health"
+    };
+  }
+
+  // 注册Agent
+  rpc RegisterAgent(RegisterAgentRequest) returns (RegisterAgentResponse) {
+    option (google.api.http) = {
+      post: "/v1/agent/register"
+      body: "*"
+    };
+  }
+}
+
+// 收集指标请求
+message CollectMetricsRequest {
+  string agent_id = 1;
+  repeated MetricData metrics = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// 收集指标响应
+message CollectMetricsResponse {
+  bool success = 1;
+  string message = 2;
+  int32 count = 3;
+}
+
+// 指标数据
+message MetricData {
+  string name = 1;
+  string value = 2;
+  string unit = 3;
+  map<string, string> labels = 4;
+  google.protobuf.Timestamp timestamp = 5;
+}
+
+// 健康检查请求
+message HealthCheckRequest {
+  string agent_id = 1;
+}
+
+// 健康检查响应
+message HealthCheckResponse {
+  bool healthy = 1;
+  string status = 2;
+  string message = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// 注册Agent请求
+message RegisterAgentRequest {
+  string agent_id = 1;
+  string hostname = 2;
+  string ip_address = 3;
+  string version = 4;
+  map<string, string> metadata = 5;
+}
+
+// 注册Agent响应
+message RegisterAgentResponse {
+  bool success = 1;
+  string message = 2;
+  string token = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}

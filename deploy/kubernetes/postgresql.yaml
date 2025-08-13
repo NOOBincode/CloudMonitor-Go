@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cloudmonitor-mysql
+  namespace: cloudmonitor
+spec:
+  serviceName: cloudmonitor-mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudmonitor-mysql
+  template:
+    metadata:
+      labels:
+        app: cloudmonitor-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root123"
+        - name: MYSQL_DATABASE
+          value: "cloudmonitor"
+        - name: MYSQL_USER
+          value: "cloudmonitor"
+        - name: MYSQL_PASSWORD
+          value: "password"
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudmonitor-mysql
+  namespace: cloudmonitor
+spec:
+  selector:
+    app: cloudmonitor-mysql
+  ports:
+  - port: 3306
+    targetPort: 3306
+  type: ClusterIP
